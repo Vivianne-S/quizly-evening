@@ -26,7 +26,7 @@
   --space-md: 1.25rem;
   --space-lg: 2rem;
   --space-xl: 3.25rem;
-  --max-card: 58rem;
+  --max-card: 64rem;
   /* Welcome view vertical rhythm */
   --welcome-pad-x: var(--space-xl);
   --welcome-pad-top: var(--space-lg);
