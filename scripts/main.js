@@ -38,6 +38,26 @@ let playerName = "";
 let nameValidationError = "";
 let pendingPlayerName = "";
 let incorrectAnswers = [];
+/** @type {typeof questions} */
+let quizQuestions = [];
+
+function shuffleQuestions(source) {
+  const shuffled = [...source];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
+function beginQuizRun() {
+  quizQuestions = shuffleQuestions(questions);
+  currentQuestionIndex = 0;
+  score = 0;
+  hasAnswered = false;
+  selectedAnswer = "";
+  incorrectAnswers = [];
+}
 
 function renderWelcome() {
   const section = document.createElement("section");
@@ -167,8 +187,8 @@ function renderQuestion() {
   const section = document.createElement("section");
   section.className = "view view--quiz";
 
-  const question = questions[currentQuestionIndex];
-  const totalQuestions = questions.length;
+  const question = quizQuestions[currentQuestionIndex];
+  const totalQuestions = quizQuestions.length;
 
   const header = document.createElement("header");
   header.className = "quiz-header";
@@ -231,7 +251,7 @@ function renderResult() {
 
   const result = document.createElement("p");
   result.className = "quiz-result-score";
-  result.textContent = `${score} of ${questions.length} correct`;
+  result.textContent = `${score} of ${quizQuestions.length} correct`;
 
   section.append(heading, playerGreeting, result);
 
@@ -277,7 +297,7 @@ function renderResult() {
 }
 
 function handleAnswer(answer) {
-  const question = questions[currentQuestionIndex];
+  const question = quizQuestions[currentQuestionIndex];
   selectedAnswer = answer;
   hasAnswered = true;
 
@@ -298,7 +318,7 @@ function handleNextQuestion() {
   hasAnswered = false;
   selectedAnswer = "";
 
-  if (currentQuestionIndex === questions.length - 1) {
+  if (currentQuestionIndex === quizQuestions.length - 1) {
     saveLastResult();
     currentView = "result";
     render();
@@ -310,11 +330,7 @@ function handleNextQuestion() {
 }
 
 function handlePlayAgain() {
-  currentQuestionIndex = 0;
-  score = 0;
-  hasAnswered = false;
-  selectedAnswer = "";
-  incorrectAnswers = [];
+  beginQuizRun();
   currentView = "quiz";
   render();
 }
@@ -349,11 +365,7 @@ function handleWelcomeSubmit(event) {
   pendingPlayerName = "";
   nameValidationError = "";
 
-  currentQuestionIndex = 0;
-  score = 0;
-  hasAnswered = false;
-  selectedAnswer = "";
-  incorrectAnswers = [];
+  beginQuizRun();
   currentView = "quiz";
   render();
 }
