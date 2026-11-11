@@ -419,6 +419,32 @@ body::after {
   transform: translateY(0);
 }
 
+.btn--secondary {
+  color: var(--color-neon-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-indent: 0.12em;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 92, 184, 0.55);
+  box-shadow: 0 0 16px rgba(255, 45, 149, 0.2);
+}
+
+.btn--secondary:hover {
+  filter: brightness(1.1);
+  border-color: var(--color-neon-bright);
+  box-shadow: 0 0 22px rgba(255, 45, 149, 0.35);
+  transform: translateY(-2px);
+}
+
+.btn--secondary:active {
+  transform: translateY(0);
+}
+
+.btn--secondary:focus-visible {
+  outline: 3px solid var(--color-neon-bright);
+  outline-offset: 2px;
+}
+
 .btn--primary:focus-visible {
   outline: 3px solid var(--color-neon-bright);
   outline-offset: 3px;
@@ -648,13 +674,21 @@ body::after {
   color: #6bffb8;
 }
 
-.view--result .btn--primary {
+.quiz-result-actions {
   position: relative;
   z-index: 1;
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  justify-content: center;
   width: 100%;
-  max-width: 22rem;
+  max-width: 28rem;
   margin: 0 auto;
+}
+
+.quiz-result-actions .btn {
+  flex: 1 1 11rem;
+  min-width: min(100%, 11rem);
 }
 
 @media (prefers-reduced-motion: reduce) {

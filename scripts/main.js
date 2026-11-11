@@ -286,13 +286,23 @@ function renderResult() {
     section.append(reviewTitle, reviewList);
   }
 
+  const actions = document.createElement("div");
+  actions.className = "quiz-result-actions";
+
+  const backToStart = document.createElement("button");
+  backToStart.type = "button";
+  backToStart.className = "btn btn--secondary";
+  backToStart.textContent = "Back to start";
+  backToStart.addEventListener("click", handleBackToStart);
+
   const playAgain = document.createElement("button");
   playAgain.type = "button";
   playAgain.className = "btn btn--primary";
   playAgain.textContent = "Play again";
   playAgain.addEventListener("click", handlePlayAgain);
 
-  section.append(playAgain);
+  actions.append(backToStart, playAgain);
+  section.append(actions);
   return section;
 }
 
@@ -332,6 +342,13 @@ function handleNextQuestion() {
 function handlePlayAgain() {
   beginQuizRun();
   currentView = "quiz";
+  render();
+}
+
+function handleBackToStart() {
+  pendingPlayerName = playerName;
+  nameValidationError = "";
+  currentView = "welcome";
   render();
 }
 
