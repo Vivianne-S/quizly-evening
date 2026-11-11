@@ -9,6 +9,7 @@ let currentQuestionIndex = 0;
 let score = 0;
 let hasAnswered = false;
 let selectedAnswer = "";
+let incorrectAnswers = [];
 
 function renderWelcome() {
   const section = document.createElement("section");
@@ -149,13 +150,46 @@ function renderResult() {
   result.className = "quiz-result-score";
   result.textContent = `${score} of ${questions.length} correct`;
 
+  section.append(heading, result);
+
+  if (incorrectAnswers.length > 0) {
+    const reviewTitle = document.createElement("h3");
+    reviewTitle.className = "quiz-result-review-title";
+    reviewTitle.textContent = "Questions you missed";
+
+    const reviewList = document.createElement("ul");
+    reviewList.className = "quiz-result-review-list";
+
+    incorrectAnswers.forEach((item) => {
+      const listItem = document.createElement("li");
+      listItem.className = "quiz-result-review-item";
+
+      const questionLine = document.createElement("p");
+      questionLine.className = "quiz-result-review-question";
+      questionLine.textContent = item.questionText;
+
+      const yourAnswerLine = document.createElement("p");
+      yourAnswerLine.className = "quiz-result-review-your";
+      yourAnswerLine.textContent = `Your answer: ${item.selectedAnswer}`;
+
+      const correctAnswerLine = document.createElement("p");
+      correctAnswerLine.className = "quiz-result-review-correct";
+      correctAnswerLine.textContent = `Correct answer: ${item.correctAnswer}`;
+
+      listItem.append(questionLine, yourAnswerLine, correctAnswerLine);
+      reviewList.appendChild(listItem);
+    });
+
+    section.append(reviewTitle, reviewList);
+  }
+
   const playAgain = document.createElement("button");
   playAgain.type = "button";
   playAgain.className = "btn btn--primary";
   playAgain.textContent = "Play again";
   playAgain.addEventListener("click", handlePlayAgain);
 
-  section.append(heading, result, playAgain);
+  section.append(playAgain);
   return section;
 }
 
@@ -166,6 +200,12 @@ function handleAnswer(answer) {
 
   if (answer === question.correctAnswer) {
     score += 1;
+  } else {
+    incorrectAnswers.push({
+      questionText: question.text,
+      selectedAnswer: answer,
+      correctAnswer: question.correctAnswer,
+    });
   }
 
   render();
@@ -190,6 +230,7 @@ function handlePlayAgain() {
   score = 0;
   hasAnswered = false;
   selectedAnswer = "";
+  incorrectAnswers = [];
   currentView = "quiz";
   render();
 }
@@ -211,6 +252,7 @@ function handleStartGame() {
   score = 0;
   hasAnswered = false;
   selectedAnswer = "";
+  incorrectAnswers = [];
   currentView = "quiz";
   render();
 }
