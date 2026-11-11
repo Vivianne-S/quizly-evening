@@ -9,6 +9,9 @@ let currentQuestionIndex = 0;
 let score = 0;
 let hasAnswered = false;
 let selectedAnswer = "";
+let playerName = "";
+let nameValidationError = "";
+let pendingPlayerName = "";
 
 function renderWelcome() {
   const section = document.createElement("section");
@@ -52,14 +55,51 @@ function renderWelcome() {
     rulesGrid.appendChild(card);
   });
 
+  const form = document.createElement("form");
+  form.className = "welcome-form";
+  form.addEventListener("submit", handleWelcomeSubmit);
+
+  const nameLabel = document.createElement("label");
+  nameLabel.className = "welcome-form__label";
+  nameLabel.htmlFor = "player-name";
+  nameLabel.textContent = "Player name";
+
+  const nameHint = document.createElement("p");
+  nameHint.className = "welcome-form__hint";
+  nameHint.textContent = "At least 2 characters to start the quiz";
+
+  const nameInput = document.createElement("input");
+  nameInput.type = "text";
+  nameInput.id = "player-name";
+  nameInput.name = "playerName";
+  nameInput.className = "welcome-form__input";
+  nameInput.placeholder = "Enter your name";
+  nameInput.value = pendingPlayerName;
+  nameInput.autocomplete = "name";
+  nameInput.required = true;
+  nameInput.maxLength = 32;
+
+  const nameError = document.createElement("p");
+  nameError.className = "welcome-form__error";
+  nameError.setAttribute("role", "alert");
+  if (nameValidationError) {
+    nameError.textContent = nameValidationError;
+  } else {
+    nameError.hidden = true;
+  }
+
+  const nameCard = document.createElement("div");
+  nameCard.className = "welcome-form__card";
+  nameCard.append(nameLabel, nameHint, nameInput, nameError);
+
   const startButton = document.createElement("button");
-  startButton.type = "button";
+  startButton.type = "submit";
   startButton.className = "btn btn--primary";
   startButton.textContent = "Start Game";
 
-  startButton.addEventListener("click", handleStartGame);
+  form.append(nameCard, startButton);
 
-  section.append(title, intro, rulesGrid, startButton);
+  section.append(title, intro, rulesGrid, form);
   return section;
 }
 
@@ -145,6 +185,10 @@ function renderResult() {
   heading.className = "quiz-question-text";
   heading.textContent = "Quiz complete!";
 
+  const playerGreeting = document.createElement("p");
+  playerGreeting.className = "quiz-result-player";
+  playerGreeting.textContent = `Well done, ${playerName}!`;
+
   const result = document.createElement("p");
   result.className = "quiz-result-score";
   result.textContent = `${score} of ${questions.length} correct`;
@@ -155,7 +199,7 @@ function renderResult() {
   playAgain.textContent = "Play again";
   playAgain.addEventListener("click", handlePlayAgain);
 
-  section.append(heading, result, playAgain);
+  section.append(heading, playerGreeting, result, playAgain);
   return section;
 }
 
@@ -206,7 +250,24 @@ function render() {
   }
 }
 
-function handleStartGame() {
+function handleWelcomeSubmit(event) {
+  event.preventDefault();
+
+  const form = event.currentTarget;
+  const nameInput = form.querySelector("#player-name");
+  const trimmedName = nameInput.value.trim();
+
+  if (trimmedName.length < 2) {
+    pendingPlayerName = nameInput.value;
+    nameValidationError = "Please enter at least 2 characters.";
+    render();
+    return;
+  }
+
+  playerName = trimmedName;
+  pendingPlayerName = "";
+  nameValidationError = "";
+
   currentQuestionIndex = 0;
   score = 0;
   hasAnswered = false;

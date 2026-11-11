@@ -252,12 +252,99 @@ body::after {
 }
 
 /* --- Primary action (full-width on small screens) --- */
-.view--welcome .btn--primary {
+.welcome-form {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 24rem;
+  margin: 0 auto;
+}
+
+.welcome-form__card {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+  background: linear-gradient(180deg, #101010 0%, #080808 100%);
+  border: 1px solid rgba(255, 60, 160, 0.45);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 20px rgba(255, 45, 149, 0.15);
+}
+
+.welcome-form__label {
+  display: block;
+  margin: 0 0 var(--space-xs);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-neon-bright);
+  text-shadow: 0 0 10px rgba(255, 92, 184, 0.45);
+}
+
+.welcome-form__hint {
+  margin: 0 0 var(--space-md);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+.welcome-form__input {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1rem 1.15rem;
+  font: inherit;
+  font-size: 1.05rem;
+  text-align: center;
+  color: var(--color-text);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 92, 184, 0.35);
+  border-radius: var(--radius-md);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.welcome-form__input::placeholder {
+  color: rgba(255, 158, 200, 0.45);
+}
+
+.welcome-form__input:hover {
+  border-color: rgba(255, 92, 184, 0.55);
+}
+
+.welcome-form__input:focus {
+  outline: none;
+  border-color: var(--color-neon-bright);
+  box-shadow: 0 0 22px rgba(255, 45, 149, 0.3),
+    inset 0 0 12px rgba(0, 0, 0, 0.35);
+}
+
+.welcome-form__input:focus-visible {
+  outline: 3px solid var(--color-neon-bright);
+  outline-offset: 2px;
+}
+
+.welcome-form__error {
+  margin: var(--space-md) 0 0;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: center;
+  color: #ffd0da;
+  background: rgba(255, 92, 122, 0.12);
+  border: 1px solid rgba(255, 92, 122, 0.4);
+  border-radius: var(--radius-md);
+}
+
+.welcome-form__error[hidden] {
+  display: none;
+}
+
+.view--welcome .welcome-form .btn--primary {
   position: relative;
   z-index: 1;
   display: block;
   width: 100%;
-  max-width: 22rem;
   margin: 0 auto;
 }
 
@@ -456,6 +543,14 @@ body::after {
 
 .view--result .quiz-question-text {
   margin-bottom: var(--space-lg);
+}
+
+.quiz-result-player {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 var(--space-md);
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
 }
 
 .view--result .quiz-result-score {
