@@ -450,6 +450,14 @@ body::after {
   margin: 0 auto;
 }
 
+.view--result {
+  text-align: center;
+}
+
+.view--result .quiz-question-text {
+  margin-bottom: var(--space-lg);
+}
+
 .view--result .quiz-result-score {
   position: relative;
   z-index: 1;
@@ -459,6 +467,15 @@ body::after {
   font-weight: 700;
   color: var(--color-neon-bright);
   text-shadow: var(--neon-text-shadow);
+}
+
+.view--result .btn--primary {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
