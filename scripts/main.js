@@ -190,7 +190,7 @@ function handlePlayAgain() {
   score = 0;
   hasAnswered = false;
   selectedAnswer = "";
-  currentView = "welcome";
+  currentView = "quiz";
   render();
 }
 
