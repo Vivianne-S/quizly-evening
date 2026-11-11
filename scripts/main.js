@@ -1,6 +1,31 @@
 const app = document.getElementById("app");
 
+const LAST_RESULT_STORAGE_KEY = "quizlyEveningLastResult";
+
 // Question data is loaded from questions.js (must run before this file in index.html)
+
+function getLastResult() {
+  const storedValue = localStorage.getItem(LAST_RESULT_STORAGE_KEY);
+  if (storedValue === null) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(storedValue);
+  } catch {
+    return null;
+  }
+}
+
+function saveLastResult() {
+  const resultData = {
+    playerName,
+    score,
+    total: questions.length,
+  };
+
+  localStorage.setItem(LAST_RESULT_STORAGE_KEY, JSON.stringify(resultData));
+}
 
 /** @type {"welcome" | "quiz" | "result"} */
 let currentView = "welcome";
@@ -25,6 +50,8 @@ function renderWelcome() {
   intro.className = "welcome-intro";
   intro.textContent =
     "Put your knowledge to the test and see how high you can score! — When you're ready, press start below.";
+
+  section.append(title, intro);
 
   const rulesGrid = document.createElement("div");
   rulesGrid.className = "rules-grid";
@@ -98,9 +125,21 @@ function renderWelcome() {
   startButton.className = "btn btn--primary";
   startButton.textContent = "Start Game";
 
-  form.append(nameCard, startButton);
+  form.append(nameCard);
 
-  section.append(title, intro, rulesGrid, form);
+  const lastResult = getLastResult();
+  if (lastResult) {
+    const lastResultBox = document.createElement("p");
+    lastResultBox.className = "welcome-last-result";
+    const lastPlayerName = lastResult.playerName || "Player";
+    lastResultBox.textContent = `Last result: ${lastPlayerName} — ${lastResult.score} of ${lastResult.total} correct`;
+    form.appendChild(lastResultBox);
+  }
+
+  form.appendChild(startButton);
+
+  section.append(rulesGrid, form);
+
   return section;
 }
 
@@ -260,6 +299,7 @@ function handleNextQuestion() {
   selectedAnswer = "";
 
   if (currentQuestionIndex === questions.length - 1) {
+    saveLastResult();
     currentView = "result";
     render();
     return;
