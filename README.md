@@ -129,6 +129,3 @@ Zip-filen hamnar i `Javascript/`. Ladda upp den i Classroom.
 
 ---
 
-## Författare
-
-Eget arbete enligt kursuppgift. Frågor vid muntlig redovisning: visa appen, förklara state/render och gå igenom ett klick i koden.
