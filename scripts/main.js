@@ -1,55 +1,14 @@
 const app = document.getElementById("app");
 
-const questions = [
-  {
-    text: "What is the capital of France?",
-    options: ["London", "Berlin", "Paris", "Madrid"],
-    correctAnswer: "Paris",
-  },
-  {
-    text: "Which planet is the largest in our solar system?",
-    options: ["Saturn", "Jupiter", "Neptune", "Mars"],
-    correctAnswer: "Jupiter",
-  },
-  {
-    text: "How many continents are there on Earth?",
-    options: ["5", "6", "7", "8"],
-    correctAnswer: "7",
-  },
-  {
-    text: "What is the chemical symbol for gold?",
-    options: ["Go", "Gd", "Au", "Ag"],
-    correctAnswer: "Au",
-  },
-  {
-    text: "In which year did World War II end?",
-    options: ["1943", "1944", "1945", "1946"],
-    correctAnswer: "1945",
-  },
-  {
-    text: "Who wrote the Harry Potter book series?",
-    options: [
-      "J.R.R. Tolkien",
-      "J.K. Rowling",
-      "C.S. Lewis",
-      "Roald Dahl",
-    ],
-    correctAnswer: "J.K. Rowling",
-  },
-  {
-    text: "What is the smallest country in the world by area?",
-    options: ["Monaco", "San Marino", "Vatican City", "Liechtenstein"],
-    correctAnswer: "Vatican City",
-  },
-  {
-    text: "Which ocean is the deepest?",
-    options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"],
-    correctAnswer: "Pacific Ocean",
-  },
-];
+// Question data is loaded from questions.js (must run before this file in index.html)
 
-/** @type {"welcome" | "quiz"} */
+/** @type {"welcome" | "quiz" | "result"} */
 let currentView = "welcome";
+
+let currentQuestionIndex = 0;
+let score = 0;
+let hasAnswered = false;
+let selectedAnswer = "";
 
 function renderWelcome() {
   const section = document.createElement("section");
@@ -104,19 +63,135 @@ function renderWelcome() {
   return section;
 }
 
-function renderQuizPlaceholder() {
+function createAnswerButton(answer, question) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "btn btn--answer";
+  button.textContent = answer;
+
+  if (hasAnswered) {
+    button.disabled = true;
+    if (answer === question.correctAnswer) {
+      button.classList.add("btn--answer-correct");
+    } else if (answer === selectedAnswer) {
+      button.classList.add("btn--answer-wrong");
+    }
+  } else {
+    button.addEventListener("click", () => handleAnswer(answer));
+  }
+
+  return button;
+}
+
+function renderQuestion() {
   const section = document.createElement("section");
   section.className = "view view--quiz";
 
-  const heading = document.createElement("h1");
-  heading.textContent = "Quiz";
+  const question = questions[currentQuestionIndex];
+  const totalQuestions = questions.length;
 
-  const placeholder = document.createElement("p");
-  placeholder.className = "quiz-placeholder";
-  placeholder.textContent = "Questions will appear here soon.";
+  const header = document.createElement("header");
+  header.className = "quiz-header";
 
-  section.append(heading, placeholder);
+  const brand = document.createElement("p");
+  brand.className = "quiz-brand";
+  brand.textContent = "Quizly Evening";
+
+  const progress = document.createElement("p");
+  progress.className = "quiz-progress";
+  progress.textContent = `Question ${currentQuestionIndex + 1} of ${totalQuestions}`;
+
+  header.append(brand, progress);
+
+  const questionText = document.createElement("h2");
+  questionText.className = "quiz-question-text";
+  questionText.textContent = question.text;
+
+  const answers = document.createElement("div");
+  answers.className = "answers answers--grid";
+
+  question.options.forEach((option) => {
+    const answerButton = createAnswerButton(option, question);
+    answers.appendChild(answerButton);
+  });
+
+  section.append(header, questionText, answers);
+
+  if (hasAnswered) {
+    const feedback = document.createElement("p");
+    feedback.className = "quiz-feedback";
+    const isCorrect = selectedAnswer === question.correctAnswer;
+    feedback.textContent = isCorrect ? "Correct!" : "Wrong!";
+    feedback.classList.add(isCorrect ? "quiz-feedback--correct" : "quiz-feedback--wrong");
+
+    const nextButton = document.createElement("button");
+    nextButton.type = "button";
+    nextButton.className = "btn btn--primary btn--next";
+    const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
+    nextButton.textContent = isLastQuestion ? "See results" : "Next question";
+    nextButton.addEventListener("click", handleNextQuestion);
+
+    section.append(feedback, nextButton);
+  }
+
   return section;
+}
+
+function renderResult() {
+  const section = document.createElement("section");
+  section.className = "view view--quiz view--result";
+
+  const heading = document.createElement("h2");
+  heading.className = "quiz-question-text";
+  heading.textContent = "Quiz complete!";
+
+  const result = document.createElement("p");
+  result.className = "quiz-result-score";
+  result.textContent = `${score} of ${questions.length} correct`;
+
+  const playAgain = document.createElement("button");
+  playAgain.type = "button";
+  playAgain.className = "btn btn--primary";
+  playAgain.textContent = "Play again";
+  playAgain.addEventListener("click", handlePlayAgain);
+
+  section.append(heading, result, playAgain);
+  return section;
+}
+
+function handleAnswer(answer) {
+  const question = questions[currentQuestionIndex];
+  selectedAnswer = answer;
+  hasAnswered = true;
+
+  if (answer === question.correctAnswer) {
+    score += 1;
+  }
+
+  render();
+}
+
+function handleNextQuestion() {
+  hasAnswered = false;
+  selectedAnswer = "";
+
+  if (currentQuestionIndex === questions.length - 1) {
+    currentView = "result";
+    render();
+    return;
+  }
+
+  currentQuestionIndex += 1;
+  render();
+}
+
+function handlePlayAgain() {
+  currentQuestionIndex = 0;
+  score = 0;
+  hasAnswered = false;
+  selectedAnswer = "";
+  currentView = "welcome";
+  render();
 }
 
 function render() {
@@ -125,11 +200,17 @@ function render() {
   if (currentView === "welcome") {
     app.appendChild(renderWelcome());
   } else if (currentView === "quiz") {
-    app.appendChild(renderQuizPlaceholder());
+    app.appendChild(renderQuestion());
+  } else if (currentView === "result") {
+    app.appendChild(renderResult());
   }
 }
 
 function handleStartGame() {
+  currentQuestionIndex = 0;
+  score = 0;
+  hasAnswered = false;
+  selectedAnswer = "";
   currentView = "quiz";
   render();
 }
