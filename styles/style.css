@@ -1,3 +1,333 @@
+/* --- Design tokens (reuse for quiz + result views later) --- */
+:root {
+  --color-bg-deep: #000000;
+  --color-bg-mid: #050505;
+  --color-bg-purple: #0a0a0a;
+  --color-surface: rgba(8, 8, 8, 0.94);
+  --color-surface-border: rgba(255, 60, 160, 0.55);
+  --color-text: #ffffff;
+  --color-text-muted: #ff9ec8;
+  --color-neon: #ff2d95;
+  --color-neon-bright: #ff5cb8;
+  --color-neon-hot: #ff1493;
+  --color-accent: var(--color-neon);
+  --color-accent-bright: var(--color-neon-bright);
+  --color-glow: rgba(255, 45, 149, 0.65);
+  --color-glow-purple: rgba(255, 20, 147, 0.5);
+  --neon-text-shadow: 0 0 12px rgba(255, 60, 170, 0.9),
+    0 0 28px rgba(255, 45, 149, 0.55);
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --shadow-card: 0 0 1px var(--color-surface-border),
+    0 0 24px rgba(255, 45, 149, 0.25), 0 24px 48px rgba(0, 0, 0, 0.8);
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1.25rem;
+  --space-lg: 2rem;
+  --space-xl: 3.25rem;
+  --max-card: 52rem;
+  /* Welcome view vertical rhythm */
+  --welcome-pad-x: var(--space-xl);
+  --welcome-pad-top: var(--space-lg);
+  --welcome-pad-bottom: var(--space-xl);
+  --welcome-gap-title-intro: var(--space-lg);
+  --welcome-gap-intro-rules: var(--space-xl);
+  --welcome-gap-rules-button: var(--space-lg);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: system-ui, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  line-height: 1.55;
+  color: var(--color-text);
+  background-color: var(--color-bg-deep);
+  background-image:
+    linear-gradient(rgba(255, 45, 149, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 45, 149, 0.06) 1px, transparent 1px),
+    radial-gradient(
+      ellipse 80% 50% at 50% -20%,
+      rgba(255, 45, 149, 0.18),
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      var(--color-bg-deep) 0%,
+      var(--color-bg-mid) 50%,
+      var(--color-bg-purple) 100%
+    );
+  background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Soft ambient lights (depth, no extra JS) */
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(60px);
+}
+
+body::before {
+  width: min(90vw, 520px);
+  height: min(90vw, 520px);
+  top: -15%;
+  right: -10%;
+  background: var(--color-neon-hot);
+  opacity: 0.35;
+}
+
+body::after {
+  width: min(80vw, 420px);
+  height: min(80vw, 420px);
+  bottom: -20%;
+  left: -15%;
+  background: var(--color-neon);
+  opacity: 0.3;
+}
+
+/* --- App shell: centers views on all screen sizes --- */
+.app {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: calc(var(--max-card) + 2.5rem);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Shared “game card” surface (welcome, quiz, result) --- */
+.view {
+  position: relative;
+  width: 100%;
+  max-width: var(--max-card);
+  background: linear-gradient(
+    165deg,
+    rgba(16, 16, 16, 0.98) 0%,
+    rgba(6, 6, 6, 0.98) 100%
+  );
+  border: 1px solid var(--color-surface-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl) 2.75rem;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.view::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(255, 45, 149, 0.12),
+    transparent 45%
+  );
+}
+
+.view--welcome {
+  padding: var(--welcome-pad-top) var(--welcome-pad-x) var(--welcome-pad-bottom);
+}
+
+@media (max-width: 479px) {
+  .view--welcome {
+    padding: var(--space-md) var(--space-md) var(--space-lg);
+  }
+}
+
+.view h1 {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 var(--space-md);
+  font-size: clamp(1.85rem, 5vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  text-align: center;
+  color: var(--color-neon-bright);
+  text-shadow: var(--neon-text-shadow);
+}
+
+.view--welcome h1 {
+  margin-top: 0;
+  margin-bottom: var(--welcome-gap-title-intro);
+  font-size: clamp(2.1rem, 6vw, 3.25rem);
+  line-height: 1.08;
+}
+
+.welcome-intro {
+  position: relative;
+  z-index: 1;
+  margin: 0 auto var(--welcome-gap-intro-rules);
+  max-width: 32rem;
+  padding: var(--space-md) var(--space-lg);
+  text-align: center;
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+  color: var(--color-text-muted);
+  border-left: 2px solid var(--color-neon);
+  border-right: 2px solid var(--color-neon);
+  background: rgba(255, 45, 149, 0.06);
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 20px rgba(255, 45, 149, 0.08);
+}
+
+/* --- Rule stats: Grid instead of bullet list --- */
+.rules-grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-md);
+  margin: 0 0 var(--welcome-gap-rules-button);
+}
+
+@media (min-width: 480px) {
+  .rules-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .rules-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+  }
+}
+
+.rule-card {
+  margin: 0;
+  padding: var(--space-lg) var(--space-md);
+  text-align: center;
+  border-radius: var(--radius-md);
+  background: linear-gradient(180deg, #101010 0%, #060606 100%);
+  border: 1px solid rgba(255, 60, 160, 0.45);
+  box-shadow: 0 0 16px rgba(255, 45, 149, 0.12);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.rule-card:hover {
+  border-color: var(--color-neon-bright);
+  box-shadow: 0 0 22px rgba(255, 45, 149, 0.35);
+  transform: translateY(-3px);
+}
+
+.rule-card__value {
+  margin: 0 0 var(--space-xs);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-neon-bright);
+  text-shadow: 0 0 14px rgba(255, 92, 184, 0.85);
+}
+
+.rule-card__label {
+  margin: 0 0 var(--space-xs);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.rule-card__detail {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+/* --- Primary action (full-width on small screens) --- */
+.view--welcome .btn--primary {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  margin: 0 auto;
+}
+
+.btn {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 1rem 2rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.btn--primary {
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  text-indent: 0.12em;
+  background: linear-gradient(
+    135deg,
+    var(--color-neon-bright) 0%,
+    var(--color-neon) 50%,
+    var(--color-neon-hot) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 20px rgba(255, 45, 149, 0.65),
+    0 0 40px rgba(255, 45, 149, 0.35);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 0 28px rgba(255, 45, 149, 0.85),
+    0 0 56px rgba(255, 45, 149, 0.45);
+  transform: translateY(-2px);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+}
+
+.btn--primary:focus-visible {
+  outline: 3px solid var(--color-neon-bright);
+  outline-offset: 3px;
+}
+
+/* --- Quiz placeholder (same card system) --- */
+.view--quiz h1 {
+  margin-bottom: var(--space-md);
+}
+
+.view--quiz p {
+  margin: 0;
+  text-align: center;
+}
+
+.quiz-placeholder {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rule-card,
+  .btn--primary {
+    transition: none;
+  }
+
+  .rule-card:hover,
+  .btn--primary:hover {
+    transform: none;
+  }
 }
