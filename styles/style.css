@@ -26,7 +26,7 @@
   --space-md: 1.25rem;
   --space-lg: 2rem;
   --space-xl: 3.25rem;
-  --max-card: 64rem;
+  --max-card: 52rem;
   /* Welcome view vertical rhythm */
   --welcome-pad-x: var(--space-xl);
   --welcome-pad-top: var(--space-lg);
@@ -34,6 +34,18 @@
   --welcome-gap-title-intro: var(--space-lg);
   --welcome-gap-intro-rules: var(--space-xl);
   --welcome-gap-rules-button: var(--space-lg);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --max-card: 58rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  :root {
+    --max-card: 64rem;
+  }
 }
 
 *,
