@@ -49,7 +49,7 @@ function renderWelcome() {
   const intro = document.createElement("p");
   intro.className = "welcome-intro";
   intro.textContent =
-    "Put your knowledge to the test and see how high you can score! — When you're ready, press start below.";
+    "Put your knowledge to the test and see how many you get right! — When you're ready, press start below.";
 
   section.append(title, intro);
 
@@ -59,8 +59,8 @@ function renderWelcome() {
   const rulesData = [
     { value: "8", label: "Questions", detail: "One at a time" },
     { value: "4", label: "Answer options", detail: "Only one is correct" },
-    { value: "1", label: "Point each", detail: "Per correct answer" },
-    { value: "★", label: "Final score", detail: "Shown when you finish" },
+    { value: "+1", label: "Per correct", detail: "Each right answer counts" },
+    { value: "★", label: "Final total", detail: "Shown as X of 8 correct" },
   ];
 
   rulesData.forEach(({ value, label, detail }) => {
