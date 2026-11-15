@@ -102,36 +102,4 @@ Quizet är publicerat och kan testas direkt i webbläsaren:
 
 ---
 
-## Checklista före inlämning (16 nov 09:00)
-
-Testa i webbläsaren (gärna med Console öppen — inga röda fel):
-
-- [ ] Namn med 1 tecken → felmeddelande på sidan
-- [ ] Hela quizet → progression och slutresultat
-- [ ] Efter svar: knappar disabled, rätt svar syns
-- [ ] Minst ett fel svar → listan “Questions you missed”
-- [ ] **Play again** → ny omgång, sidan laddas inte om
-- [ ] **Back to start** → tillbaka till welcome
-- [ ] Ladda om sidan → **Last result** syns (om du spelat klart minst en gång)
-
-### Zip till Google Classroom
-
-Inkludera:
-
-- `index.html`
-- mappen `scripts/`
-- mappen `styles/`
-
-`README.md` behövs oftast inte i zip-en (men skadar inte om den följer med).
-
-Från **mappen ovanför** projektet:
-
-```bash
-cd /Users/vivianne-s/VSCode/Javascript
-zip -r quizly-evening-inlamning.zip quizly-evening/index.html quizly-evening/scripts quizly-evening/styles
-```
-
-Zip-filen hamnar i `Javascript/`. Ladda upp den i Classroom.
-
----
 
