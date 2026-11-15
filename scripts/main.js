@@ -1,8 +1,14 @@
+// Quizly Evening – logik, state och render().
+// Flöde vid klick: händelsefunktion → ändra variabler → render() → ny DOM.
+
+// --- DOM ---
+// Tom container i index.html; allt UI byggs här inifrån JavaScript.
 const app = document.getElementById("app");
 
 const LAST_RESULT_STORAGE_KEY = "quizlyEveningLastResult";
 
-// Question data is loaded from questions.js (must run before this file in index.html)
+// --- localStorage (VG-tillägg 5) ---
+// Spara/läsa senaste quizresultat mellan sidladdningar.
 
 function getLastResult() {
   const storedValue = localStorage.getItem(LAST_RESULT_STORAGE_KEY);
@@ -27,19 +33,25 @@ function saveLastResult() {
   localStorage.setItem(LAST_RESULT_STORAGE_KEY, JSON.stringify(resultData));
 }
 
+// --- State (som i todo-appen) ---
+// När något ändras här anropas render() så sidan ritas om från variablerna.
+
 /** @type {"welcome" | "quiz" | "result"} */
 let currentView = "welcome";
 
-let currentQuestionIndex = 0;
-let score = 0;
-let hasAnswered = false;
-let selectedAnswer = "";
+let currentQuestionIndex = 0; // vilken fråga som visas (index i quizQuestions)
+let score = 0; // antal rätt svar denna omgång
+let hasAnswered = false; // om användaren redan svarat på aktuell fråga
+let selectedAnswer = ""; // vad användaren klickade på
 let playerName = "";
-let nameValidationError = "";
-let pendingPlayerName = "";
-let incorrectAnswers = [];
+let nameValidationError = ""; // visas på welcome om namnet är för kort
+let pendingPlayerName = ""; // behåller input vid valideringsfel
+let incorrectAnswers = []; // sparas för resultatlistan (VG-tillägg 4)
 /** @type {typeof questions} */
-let quizQuestions = [];
+let quizQuestions = []; // kopia av questions, blandad ordning per omgång
+
+// --- Ny omgång ---
+// Anropas vid Start Game och Play again. Originalet i questions.js ändras inte.
 
 function shuffleQuestions(source) {
   const shuffled = [...source];
@@ -58,6 +70,8 @@ function beginQuizRun() {
   selectedAnswer = "";
   incorrectAnswers = [];
 }
+
+// --- Bygga vyer (returnerar ett element, läggs in av render) ---
 
 function renderWelcome() {
   const section = document.createElement("section");
@@ -147,6 +161,7 @@ function renderWelcome() {
 
   form.append(nameCard);
 
+  // VG-tillägg 5: visa sparat resultat om det finns
   const lastResult = getLastResult();
   if (lastResult) {
     const lastResultBox = document.createElement("p");
@@ -163,6 +178,8 @@ function renderWelcome() {
   return section;
 }
 
+// Skapar en svarsknapp och returnerar den (VG-krav).
+// Efter svar: disabled + grön/röd (VG-tillägg 1).
 function createAnswerButton(answer, question) {
   const button = document.createElement("button");
   button.type = "button";
@@ -210,6 +227,7 @@ function renderQuestion() {
   const answers = document.createElement("div");
   answers.className = "answers answers--grid";
 
+  // VG: samma loop för alla alternativ – forEach, ingen duplicerad kod
   question.options.forEach((option) => {
     const answerButton = createAnswerButton(option, question);
     answers.appendChild(answerButton);
@@ -217,6 +235,7 @@ function renderQuestion() {
 
   section.append(header, questionText, answers);
 
+  // Feedback och "Nästa" visas först efter att användaren svarat
   if (hasAnswered) {
     const feedback = document.createElement("p");
     feedback.className = "quiz-feedback";
@@ -306,6 +325,9 @@ function renderResult() {
   return section;
 }
 
+// --- Klick / händelser: uppdatera state → render() ---
+
+// Klick på ett svarsalternativ
 function handleAnswer(answer) {
   const question = quizQuestions[currentQuestionIndex];
   selectedAnswer = answer;
@@ -324,6 +346,7 @@ function handleAnswer(answer) {
   render();
 }
 
+// Nästa fråga eller gå till resultat efter sista frågan
 function handleNextQuestion() {
   hasAnswered = false;
   selectedAnswer = "";
@@ -339,6 +362,7 @@ function handleNextQuestion() {
   render();
 }
 
+// VG-tillägg 2: ny omgång utan location.reload()
 function handlePlayAgain() {
   beginQuizRun();
   currentView = "quiz";
@@ -352,6 +376,7 @@ function handleBackToStart() {
   render();
 }
 
+// Central render (VG): töm app och rita rätt vy utifrån currentView
 function render() {
   app.replaceChildren();
 
@@ -364,6 +389,7 @@ function render() {
   }
 }
 
+// Start Game – VG-tillägg 3: namn minst 2 tecken efter trim()
 function handleWelcomeSubmit(event) {
   event.preventDefault();
 
@@ -387,4 +413,5 @@ function handleWelcomeSubmit(event) {
   render();
 }
 
+// Första uppritning när sidan laddas
 render();

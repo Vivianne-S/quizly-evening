@@ -15,7 +15,13 @@ quizly-evening/
 └── README.md
 ```
 
-## Köra projektet
+## Live (Netlify)
+
+Quizet är publicerat och kan testas direkt i webbläsaren:
+
+**https://quizly-evening.netlify.app**
+
+## Köra projektet lokalt
 
 1. Öppna `index.html` i webbläsaren, **eller**
 2. Använd Live Server / liknande (rekommenderas).

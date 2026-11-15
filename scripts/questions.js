@@ -1,3 +1,6 @@
+// Quizdata: array med frågeobjekt (laddas före main.js i index.html).
+// Varje objekt: text (fråga), options (svarsalternativ), correctAnswer (rätt svar).
+
 const questions = [
   {
     text: "What is the capital of France?",
